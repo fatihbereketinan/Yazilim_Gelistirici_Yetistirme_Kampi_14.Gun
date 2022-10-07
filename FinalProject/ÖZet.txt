@@ -1,0 +1,50 @@
+.Bu derste güvenlik üzerine çalýþacaðýz. Projelerde yetkilendirme çalýþmalarýný yapacaðýz. 
+.API mize bir Jason ve Token bazlý güvenlik yeteneði kazandýracaðýz ve ayný zamanda bunu Business tarafýnda Aspect lerle yöneteceðiz.
+.Authorasiton:Yetkilendirme
+.Yetki gerektiren bir api bazlý yapýmýz varsa jason web token(jwt) dediðimiz bir jason bazlý bir token dan yararlanýrýz.
+.Cliend Api ye önce bir istekte bulunur. Sistemimiz bakar yetkisi yoksa olumsuz cevap döner client'e. Eðer kullanýcý adaý ve þifresi var ve yetkisi varsa Client bana bir token ver der
+Daha sonra Api kontrol eder. Kullanýcý adý ve parolasý doðruysa Cliente bir jwtoken verir. Client bundan sonra bütün iþlemlerini yaparken örneðin ürün ekleme iþlemini yaparken Api ye bir tane
+ürün gönderecek ayný zamanda biz buna HTTP istek zarfý diyoruz. Bu zarfýn içerisinde bir de jwtoken var ve bunla birlikte istekte bulunuyor. Daha sonra yetkisine göre olumlu veya olumsuz cevap
+dönülüyor.
+.Hashing, Encrypction farklarýna bak.Bunlar bir datayý karþý taraf okuyamasýn diye yapýlan çalýþmalardýr.
+.Parolalarýmýzý okunamasýn diye MD5, SHA1 gibi formatlarda hashleriz. Verilerimizi anlamlý olmayan þekilde tutarýz. Kullanýcý giriþ yapmak istediðinde parolalarý kontrol edip hash karþýlaþtýrmasý yaparýz.
+.kullanýcýn girdiði parolayý zayýf kalmasýn diye kendimizde birþeyler ekleyerek hashliyoruz. Buna Salting deniyoruz. 
+.Encryption: Geri dönüþü olan veridir. Þifrelemesi ve çözmesi vardýr. Ýlgili datamýz encript ediliyor ayný zamanda decript te edilebiliyor.Bizim bunu nasýl ve neyle þifrelediðimiz bilmemiz gerekiyor
+Bu nokta da Key dediðimiz anahtarlara sahip olmamýz gerekiyor. Anahtarla dataya ulaþýrýz.
+
+.Northwind veritabanýnda Üç tane tablo oluþturduk. Bunlar; Users, OperationClaims(roller-admin,editor, kullanýcý gibi burada oluþturulacak.), UserOperationClaims( Userin operasyon claimi)
+.Tablolarýn entity lerini Core katmanýnda oluþturduk. Bu oluþturacaðýmýz varlýklar bütün projelemizde kullanýlabileceði için Core katmanýnda oluþturduk.
+.WepAPI--appsettings.json dosyasý webapimizin ayarlarýný konfügre ettiðimiz yerdir. Buraya bir jason web token (jwt) konfügrasyonu koyacaðýz. TokenOptions adýnda bir anahtar oluþturduk. Zronlu içerikleri ekledik.
+.Core-Utilities Security klasörü oluþturduk ve içerisine Encryption, Hashing ve JWT klasörleri oluþturduk.
+.Hashing içerisine Hashing Helper classý oluþturduk. Hashleme bilgisine ihtiyacýmýz olursa bu aracý kullanacaðýz. Araç olduðu için çýplak kalabilir.
+.Encryption klasörü içerisine SecurityKeyHelper classý oluþturduk.
+.Ýçerisinde þifreleme olan sistemlerde bizim herþeyi bir byte[] formatýnda vermemiz gerekiyor. Basit bir stringle bir key oluþturamýyoruz. Örn. biz appsetting.json içerisinde securitykey
+oluþyurdukya bunlarý aspnetin jwt servislerinin anlayabileceði yapýya getirmemiz gerekiyor.
+.Encription içerisinde SigninCredentialsHelping classý oluþturduk. Bu bizim için wep apide jwt servislerinin sisteme girebilecðimiz anahtarlarýný oluþturur.
+.JWT klasörü içerisinde AccesToken, ITokenHelper, JwtHelper, TokenOptions classlarý oluþturduk.
+.Core katmanýna Extentions klasörü oluþturduk.Bu klasör içerisine ClaimExtensions ve ClaimsPrincipalExtensions classlarý oluþturduk.
+.SecuredOperation aspectini oluþturulým. Authorazition aspetleri businessa yazýlýr genelde.,
+.Business katmanýnda BusinessAspect(Autofac) klasörlerini oluþturuduk. bu kasör içerisine SecuredOperation Classýný oluþturduk.
+.Core katmanýnda Utilities Ioc klasörü oluþturup içerisine ServiceTool classý oluþturduk. 
+.ProductManagere gelip aspecti using ettik.
+.DataAcces Abract IUserDal clasý oluþturuldu.
+.DataAccess Concrete EntityFramework içerisine EfUserDal clasý ekledik.
+.NorthwindContexte DbSet lerimizi yaptýk.
+.Business katmaný Abract klasörüne IUserService ekledik. IAuthServiceyi de ekledik.
+.Entites katmaný Dtos klasörüne UserForLoginDto clasýný ekledik.UserForRegisterDto clasýný da ekledik.
+.Business katmaný Concrete klasörü içerisine UserManager ve AuthManager classlarýný ekledik.
+.WepAPI katmaný Controller klasörüne AuthController clasýný ekledik.
+.Business katmaný DependencyResolvers AutofacBusinessModule içerisini güncelledik.
+.WepAPI startup a jwt kullanacaðýný bildirdik.
+.Postman testimizi yapalým.
+.Bir register çalýþtýralým. POST-->https://localhost:44331/api/auth/register
+.Body-Raw kayýt bilgilerini gireceðiz.{"firstName":"Engin","lastName":"Demiroð","email":"engin@engin.com","password":"12345"}
+.Send yapýnca verilen tokeni koplayadýk.
+.POST-->https://localhost:44331/api/products/add  ürün ekleme yapacaðýz.
+.Headerse geldik. Key kýsmýnda Authorization yazdýk value kýsmýna ise Bearer boþluk token bilgisini yapýþtýrdýk. 
+
+            
+            
+            
+            
+        
